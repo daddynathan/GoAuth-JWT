@@ -13,8 +13,7 @@ services:
    environment:
      DB_DSN: "${MYSQL_USER}:${APP_DB_PASS}@tcp(mysql:3306)/${MYSQL_DATABASE}?charset=utf8mb4&parseTime=true&loc=Local"
      REDIS_ADDR: "redis:6379"
-     REDIS_PASS: "${REDIS_PASS}" 
-     APP_DB_PASS: "${APP_DB_PASS}"
+     REDIS_PASS: "${REDIS_PASS}"
    depends_on:
       mysql:
         condition: service_healthy 
@@ -62,3 +61,4 @@ volumes:
   mysql_data:
 
   redis_data:
+
