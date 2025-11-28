@@ -36,10 +36,11 @@
 #### `.env` — для инфраструктуры
 ```env
 MYSQL_ROOT_PASSWORD= # пароль от MySQL
-REDIS_PASS= # пароль от Redis
-USER_DB_PASS= # пароль для пользовательской учётной записи в MySQL (для приложения, а не root)
-MYSQL_PASSWORD= # имя пользователя в MySQL
 MYSQL_DATABASE= # имя бд в MySQL
+MYSQL_USER= # имя пользователя в MySQL
+MYSQL_PASSWORD= # пароль пользователя в MySQL
+
+REDIS_PASS= # пароль от Redis
 ```
 
 #### `app.env` — для Go-приложения
