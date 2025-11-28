@@ -1,0 +1,63 @@
+
+services:
+  api:
+   build: 
+     context: .
+     dockerfile: Dockerfile
+   container_name: go_auth_api
+   restart: always
+   ports:
+     - "8080:8080"
+   env_file:
+     - app.env
+   environment:
+     DB_DSN: "daddynathan:${APP_DB_PASS}@tcp(mysql:3306)/inmt?charset=utf8mb4&parseTime=true&loc=Local"
+     REDIS_ADDR: "redis:6379"
+     REDIS_PASS: "${REDIS_PASS}" 
+     APP_DB_PASS: "${APP_DB_PASS}"
+   depends_on:
+      mysql:
+        condition: service_healthy 
+      redis:
+        condition: service_healthy 
+
+  redis:
+    image: redis:latest
+    container_name: auth_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_PASSWORD: "${REDIS_PASS}"
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASS}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASS}", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mysql:
+    image: mysql:8.0
+    container_name: auth_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}" 
+      MYSQL_DATABASE: inmt
+      MYSQL_USER: daddynathan
+      MYSQL_PASSWORD: ${APP_DB_PASS}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./repo/migrations:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:
+  redis_data:

@@ -1,0 +1,6 @@
+.PHONY: swagger run build
+
+# Генерация Swagger-документации
+swagger:
+	rm -rf docs/
+	swag init --dir ./cmd,./internal --parseDependency --parseInternal
